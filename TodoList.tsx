@@ -14,11 +14,11 @@ function TodoItem({ todo, onToggleDone, onDelete }: TodoItemProps) {
     return (
         <View style={styles.todoItem}>
             <Checkbox
-                status={todo.done ? 'checked' : 'unchecked'}
-                onPress={() => onToggleDone(todo.todoId)}
+                status={todo.isDone() ? 'checked' : 'unchecked'}
+                onPress={() => onToggleDone(todo.getTodoId())}
             />
-            <Text style={todo.done ? styles.todoTextDone : styles.todoText}>{todo.description}</Text>
-            <IconButton icon="delete" onPress={() => onDelete(todo.todoId)} />
+            <Text style={todo.isDone() ? styles.todoTextDone : styles.todoText}>{todo.getDescription()}</Text>
+            <IconButton icon="delete" onPress={() => onDelete(todo.getTodoId())} />
         </View>
     )
 }
@@ -63,7 +63,7 @@ function TodoList() {
         <View style={styles.container}>
             <FlatList
                 data={todos}
-                keyExtractor={(item) => item.todoId.toString()}
+                keyExtractor={(item) => item.getTodoId().toString()}
                 renderItem={({ item }) => (
                     <TodoItem todo={item} onToggleDone={handleToggleDone} onDelete={handleDelete} />
                 )}

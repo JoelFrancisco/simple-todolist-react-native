@@ -2,14 +2,30 @@ import uuid from 'react-native-uuid';
 import database from "./database";
 
 export class Todo {
-    todoId: string;
-    description: string;
-    done: boolean;
+    private todoId: string;
+    private description: string;
+    private done: boolean;
 
-    constructor(todoId: string = uuid.v4().toString(), description: string, done: boolean = false) {
+    getTodoId() {
+        return this.todoId;
+    }
+
+    getDescription() {
+        return this.description;
+    }
+
+    isDone() {
+        return this.done;
+    }
+
+    private constructor(todoId: string, description: string, done: boolean) {
         this.todoId = todoId;
         this.description = description;
         this.done = done;
+    }
+
+    static of(description: string) {
+        return new Todo(uuid.v4().toString(), description, false);
     }
 
     toggle() {
@@ -17,22 +33,33 @@ export class Todo {
     }
 
     async save() {
-        const connection = await database.connectToDatabase();
         if (await this.exists(this.todoId)) {
-            await connection.runAsync(
-                "UPDATE todos SET description = ?, done = ? WHERE todoId = ?",
-                this.description,
-                this.done,
-                this.todoId
-            );
+            await this.saveNewTodo();
         } else {
-            await connection.runAsync(
-                "INSERT INTO todos (todoId, description, done) VALUES (?, ?, ?)",
-                this.todoId,
-                this.description,
-                this.done
-            );
+            await this.updateExistingTodo();
         }
+    }
+
+    private async updateExistingTodo() {
+        const connection = await database.connectToDatabase();
+
+        await connection.runAsync(
+            "INSERT INTO todos (todoId, description, done) VALUES (?, ?, ?)",
+            this.todoId,
+            this.description,
+            this.done
+        );
+    }
+
+    private async saveNewTodo() {
+        const connection = await database.connectToDatabase();
+
+        await connection.runAsync(
+            "UPDATE todos SET description = ?, done = ? WHERE todoId = ?",
+            this.description,
+            this.done,
+            this.todoId
+        );
     }
 
     async delete() {
