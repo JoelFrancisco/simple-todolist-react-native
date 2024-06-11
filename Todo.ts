@@ -12,6 +12,10 @@ export class Todo {
         this.done = done;
     }
 
+    toggle() {
+        this.done = !this.done;
+    }
+
     async save() {
         const connection = await database.connectToDatabase();
         if (await this.exists(this.todoId)) {

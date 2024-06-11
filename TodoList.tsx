@@ -45,7 +45,7 @@ function TodoList() {
     const handleToggleDone = async (id: string) => {
         const todo = await Todo.findById(id);
         if (todo) {
-            todo.done = !todo.done;
+            todo.toggle()
             await todo.save();
             setTodos(await Todo.findAll());
         }
