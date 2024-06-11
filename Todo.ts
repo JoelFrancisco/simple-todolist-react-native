@@ -1,11 +1,12 @@
+import uuid from 'react-native-uuid';
 import database from "./database";
 
 export class Todo {
-    todoId: number;
+    todoId: string;
     description: string;
     done: boolean;
 
-    constructor(todoId: number, description: string, done: boolean = false) {
+    constructor(todoId: string = uuid.v4().toString(), description: string, done: boolean = false) {
         this.todoId = todoId;
         this.description = description;
         this.done = done;
@@ -35,13 +36,13 @@ export class Todo {
         await connection.runAsync("DELETE FROM todos WHERE todoId = ?", this.todoId);
     }
 
-    private async exists(todoId: number): Promise<boolean> {
+    private async exists(todoId: string): Promise<boolean> {
         const connection = await database.connectToDatabase();
         const result = await connection.getFirstAsync("SELECT 1 FROM todos WHERE todoId = ?", todoId);
         return !!result;
     }
 
-    static async findById(todoId: number): Promise<Todo | null> {
+    static async findById(todoId: string): Promise<Todo | null> {
         const connection = await database.connectToDatabase();
         const row = await connection.getFirstAsync("SELECT * FROM todos WHERE todoId = ?", todoId) as Todo | null;
 

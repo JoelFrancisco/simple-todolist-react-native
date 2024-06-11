@@ -6,22 +6,24 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 interface TodoItemProps {
     todo: Todo;
-    onToggleDone: (id: number) => void;
-    onDelete: (id: number) => void;
+    onToggleDone: (id: string) => void;
+    onDelete: (id: string) => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onDelete }) => (
-    <View style={styles.todoItem}>
-        <Checkbox
-            status={todo.done ? 'checked' : 'unchecked'}
-            onPress={() => onToggleDone(todo.todoId)}
-        />
-        <Text style={todo.done ? styles.todoTextDone : styles.todoText}>{todo.description}</Text>
-        <IconButton icon="delete" onPress={() => onDelete(todo.todoId)} />
-    </View>
-);
+function TodoItem({ todo, onToggleDone, onDelete }: TodoItemProps) {
+    return (
+        <View style={styles.todoItem}>
+            <Checkbox
+                status={todo.done ? 'checked' : 'unchecked'}
+                onPress={() => onToggleDone(todo.todoId)}
+            />
+            <Text style={todo.done ? styles.todoTextDone : styles.todoText}>{todo.description}</Text>
+            <IconButton icon="delete" onPress={() => onDelete(todo.todoId)} />
+        </View>
+    )
+}
 
-const TodoList: React.FC = () => {
+function TodoList() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const navigation = useNavigation();
 
@@ -40,7 +42,7 @@ const TodoList: React.FC = () => {
         }, [])
     );
 
-    const handleToggleDone = async (id: number) => {
+    const handleToggleDone = async (id: string) => {
         const todo = await Todo.findById(id);
         if (todo) {
             todo.done = !todo.done;
@@ -49,7 +51,7 @@ const TodoList: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         const todo = await Todo.findById(id);
         if (todo) {
             await todo.delete();

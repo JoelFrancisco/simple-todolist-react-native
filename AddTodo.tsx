@@ -3,15 +3,16 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { Todo } from './Todo';
 import { useNavigation } from '@react-navigation/native';
+import uuid from 'react-native-uuid';
 
-const AddTodo: React.FC = () => {
+function AddTodo() {
     const [description, setDescription] = useState<string>('');
     const navigation = useNavigation();
 
     const handleAddTodo = async () => {
         if (description.trim() === '') return;
 
-        const newTodo = new Todo(Date.now(), description, false);
+        const newTodo = new Todo(uuid.v4().toString(), description, false);
         await newTodo.save();
         navigation.goBack();
     };

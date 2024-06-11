@@ -7,7 +7,7 @@ import AddTodo from './AddTodo';
 
 const Stack = createStackNavigator();
 
-const App: React.FC = () => {
+function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
